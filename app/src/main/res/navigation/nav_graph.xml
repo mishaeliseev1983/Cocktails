@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/drinkListFragment">
+
+    <fragment
+        android:id="@+id/drinkListFragment"
+        android:name="com.melyseev.cocktails.presentation.ui.drink_list.DrinkListFragment"
+        android:label="DrinkListFragment" >
+        <action
+            android:id="@+id/viewRecipe"
+            app:destination="@id/drinkFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/drinkFragment"
+        android:name="com.melyseev.cocktails.presentation.ui.drink.DrinkFragment"
+        android:label="DrinkFragment" />
+</navigation>
