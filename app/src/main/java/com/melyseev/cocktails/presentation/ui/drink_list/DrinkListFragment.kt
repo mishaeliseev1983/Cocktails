@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import com.melyseev.cocktails.BaseApplication
+import com.melyseev.cocktails.datastore.DataStoreDarkTheme
 import com.melyseev.cocktails.presentation.components.AppSearchBar
 import com.melyseev.cocktails.presentation.components.DrinkList
 import com.melyseev.cocktails.presentation.theme.AppTheme
@@ -28,6 +29,9 @@ class DrinkListFragment: Fragment() {
     private val viewModel: DrinkListViewModel by viewModels()
     @Inject
     lateinit var application: BaseApplication
+
+    @Inject
+    lateinit var darkTheme: DataStoreDarkTheme
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -58,7 +62,7 @@ class DrinkListFragment: Fragment() {
             setContent {
 
                 AppTheme(
-                    darkTheme = application.isDark.value
+                    darkTheme = darkTheme.isDark.value
                 ) {
                     var drinks = viewModel.drinks.value
                     //val page = viewModel.page.value
@@ -79,7 +83,7 @@ class DrinkListFragment: Fragment() {
                                 },
                                 selectedCategory = viewModel.selectedCategory.value,
                                 categoryScrollPosition = categoryScrollPosition,
-                                onToggleTheme = { application.toggleTheme() }
+                                onToggleTheme = { darkTheme.toggleTheme() }
                             )
                         },
                         scaffoldState = scaffoldState,
