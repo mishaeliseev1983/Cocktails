@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.melyseev.cocktails.domain.model.DrinkShort
 import com.melyseev.cocktails.interactors.drink_list.FilterDrinks
+import com.melyseev.cocktails.presentation.util.ConnectivityManagerNetworkAvailable
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
@@ -18,12 +19,15 @@ const val TAG = "DrinkListViewModel"
 @HiltViewModel
 class DrinkListViewModel
 //@Inject constructor(private val filterDrinks: FilterDrinks): ViewModel() {
-@Inject constructor(private val filterDrinks: FilterDrinks):ViewModel(){
+@Inject constructor(private val filterDrinks: FilterDrinks,
+                    val connectivityManager: ConnectivityManagerNetworkAvailable
+                    ):ViewModel(){
     val drinks: MutableState<List<DrinkShort>> = mutableStateOf(listOf())
     val query = mutableStateOf("Alcoholic")
     var categoryScrollPosition: Int = -1
     var loading = mutableStateOf(false)
     val selectedCategory:MutableState<DrinkCategory?> = mutableStateOf(null)
+
     init {
         onTriggerEvent(DrinkListEvent.NewFilterAlcoholicEvent)
     }

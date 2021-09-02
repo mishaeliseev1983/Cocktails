@@ -18,6 +18,7 @@ import com.melyseev.cocktails.datastore.DataStoreDarkTheme
 import com.melyseev.cocktails.presentation.components.AppSearchBar
 import com.melyseev.cocktails.presentation.components.DrinkList
 import com.melyseev.cocktails.presentation.theme.AppTheme
+import com.melyseev.cocktails.presentation.util.ConnectivityManagerNetworkAvailable
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -29,7 +30,6 @@ class DrinkListFragment: Fragment() {
     private val viewModel: DrinkListViewModel by viewModels()
     @Inject
     lateinit var application: BaseApplication
-
     @Inject
     lateinit var darkTheme: DataStoreDarkTheme
 
@@ -62,7 +62,8 @@ class DrinkListFragment: Fragment() {
             setContent {
 
                 AppTheme(
-                    darkTheme = darkTheme.isDark.value
+                    darkTheme = darkTheme.isDark.value,
+                    isNetworkAvailable = viewModel.connectivityManager.isNetworkAvailable.value
                 ) {
                     var drinks = viewModel.drinks.value
                     //val page = viewModel.page.value

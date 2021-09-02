@@ -1,11 +1,14 @@
 package com.melyseev.cocktails.presentation.theme
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.Column
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import com.melyseev.cocktails.presentation.components.ConnectivityMonitor
+import com.melyseev.cocktails.presentation.util.ConnectivityManagerNetworkAvailable
 
 @SuppressLint("ConflictingOnColor")
 private val LightThemeColors = lightColors(
@@ -39,6 +42,7 @@ private val DarkThemeColors = darkColors(
 @Composable
 fun AppTheme(
     darkTheme: Boolean,
+    isNetworkAvailable: Boolean,
     content: @Composable () -> Unit,
 ) {
     MaterialTheme(
@@ -46,6 +50,9 @@ fun AppTheme(
         //typography = QuickSandTypography,
         shapes = AppShapes
     ){
-        content()
+        Column {
+            ConnectivityMonitor(isNetworkAvailable = isNetworkAvailable)
+            content()
+        }
     }
 }

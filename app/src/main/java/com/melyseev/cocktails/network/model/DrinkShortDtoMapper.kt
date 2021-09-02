@@ -5,14 +5,19 @@ import com.melyseev.cocktails.domain.util.DomainMapper
 
 class DrinkShortDtoMapper: DomainMapper<DrinkShortDto, DrinkShort> {
     override fun mapToDomain(drinkShortDto: DrinkShortDto): DrinkShort {
-        return  DrinkShort( drinkShortDto.idDink,
-            drinkShortDto.strDrink,
-            drinkShortDto.strDrinkThumb
+        return  DrinkShort(
+                idDrink = drinkShortDto.idDink,
+                strDrink =  drinkShortDto.strDrink,
+                strDrinkThumb = drinkShortDto.strDrinkThumb
         )
     }
 
     override fun mapFromDomain(domainModel: DrinkShort): DrinkShortDto {
-        TODO("Not yet implemented")
+        return DrinkShortDto(
+            idDink = domainModel.idDrink,
+            strDrink = domainModel.strDrink,
+            strDrinkThumb = domainModel.strDrinkThumb
+        )
     }
 
     fun fromDomainList(initial: List<DrinkShortDto>): List<DrinkShort>{
