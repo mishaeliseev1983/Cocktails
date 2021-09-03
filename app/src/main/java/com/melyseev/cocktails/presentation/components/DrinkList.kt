@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.ScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
+import com.melyseev.cocktails.R
 import com.melyseev.cocktails.domain.model.DrinkShort
 import kotlinx.coroutines.delay
 
@@ -34,10 +35,10 @@ fun DrinkList(
                 */
 
                 DrinkCard(drink = one_drink, onClick = {
-                    //val bundle= Bundle()
-                    //bundle.putInt("recipe_id", recipe.id?: -1)
-                    //navController.navigate(R.id.viewRecipe, bundle)
-                    //Log.w("Recipe", " 1.  Try load recipe index= ${index}, title = ${recipe.title}" )
+                    val bundle= Bundle()
+                    bundle.putString("drink_id", one_drink.idDrink?: "")
+                    navController.navigate(R.id.viewRecipe, bundle)
+                    Log.w("Full Drink", " 1.  Try load drink index= ${index}, title = ${one_drink.strDrink}" )
 
                 }, index)
             }

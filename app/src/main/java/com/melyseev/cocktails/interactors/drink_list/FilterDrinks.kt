@@ -4,7 +4,7 @@ import android.util.Log
 import com.melyseev.cocktails.domain.data.DataState
 import com.melyseev.cocktails.domain.model.DrinkShort
 import com.melyseev.cocktails.network.RetrofitService
-import com.melyseev.cocktails.network.model.DrinkShortDtoMapper
+import com.melyseev.cocktails.network.model.drink_short.DrinkShortDtoMapper
 import com.melyseev.cocktails.network.response.DrinkFilterResponse
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow

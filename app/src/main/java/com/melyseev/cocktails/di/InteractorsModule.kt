@@ -1,8 +1,10 @@
 package com.melyseev.cocktails.di
 
+import com.melyseev.cocktails.interactors.drink.GetFullbyIdDrink
 import com.melyseev.cocktails.interactors.drink_list.FilterDrinks
 import com.melyseev.cocktails.network.RetrofitService
-import com.melyseev.cocktails.network.model.DrinkShortDtoMapper
+import com.melyseev.cocktails.network.model.drink_full.DrinkFullDtoMapper
+import com.melyseev.cocktails.network.model.drink_short.DrinkShortDtoMapper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,5 +28,21 @@ object InteractorsModule {
             retrofitService = retrofitService,
             //recipeEntityMapper = recipeEntityMapper,
             drinkShortDtoMapper = drinkShortDtoMapper)
+    }
+
+
+    @ViewModelScoped
+    @Provides
+    fun provideFullbyIdDrink(
+        //recipeDao: RecipeDao,
+        retrofitService: RetrofitService,
+        //recipeEntityMapper: RecipeEntityMapper,
+        drinkFullDtoMapper: DrinkFullDtoMapper,
+    ):  GetFullbyIdDrink {
+        return GetFullbyIdDrink(
+            //recipeDao = recipeDao,
+            retrofitService = retrofitService,
+            //recipeEntityMapper = recipeEntityMapper,
+            drinkFullDtoMapper = drinkFullDtoMapper)
     }
 }

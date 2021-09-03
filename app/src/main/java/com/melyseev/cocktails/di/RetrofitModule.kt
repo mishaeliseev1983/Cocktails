@@ -2,7 +2,8 @@ package com.melyseev.cocktails.di
 
 import com.google.gson.GsonBuilder
 import com.melyseev.cocktails.network.RetrofitService
-import com.melyseev.cocktails.network.model.DrinkShortDtoMapper
+import com.melyseev.cocktails.network.model.drink_full.DrinkFullDtoMapper
+import com.melyseev.cocktails.network.model.drink_short.DrinkShortDtoMapper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,9 +18,16 @@ object RetrofitModule {
 
     @Singleton
     @Provides
-    fun provideRecipeDtoMapper(): DrinkShortDtoMapper {
+    fun provideShortDtoMapper(): DrinkShortDtoMapper {
         return DrinkShortDtoMapper()
     }
+
+    @Singleton
+    @Provides
+    fun provideFullDtoMapper(): DrinkFullDtoMapper {
+        return DrinkFullDtoMapper()
+    }
+
 
     @Singleton
     @Provides

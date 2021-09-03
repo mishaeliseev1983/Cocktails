@@ -1,4 +1,4 @@
-package com.melyseev.cocktails.network.model
+package com.melyseev.cocktails.network.model.drink_short
 
 import com.melyseev.cocktails.domain.model.DrinkShort
 import com.melyseev.cocktails.domain.util.DomainMapper
@@ -6,7 +6,7 @@ import com.melyseev.cocktails.domain.util.DomainMapper
 class DrinkShortDtoMapper: DomainMapper<DrinkShortDto, DrinkShort> {
     override fun mapToDomain(drinkShortDto: DrinkShortDto): DrinkShort {
         return  DrinkShort(
-                idDrink = drinkShortDto.idDink,
+                idDrink = drinkShortDto.idDrink,
                 strDrink =  drinkShortDto.strDrink,
                 strDrinkThumb = drinkShortDto.strDrinkThumb
         )
@@ -14,7 +14,7 @@ class DrinkShortDtoMapper: DomainMapper<DrinkShortDto, DrinkShort> {
 
     override fun mapFromDomain(domainModel: DrinkShort): DrinkShortDto {
         return DrinkShortDto(
-            idDink = domainModel.idDrink,
+            idDrink = domainModel.idDrink,
             strDrink = domainModel.strDrink,
             strDrinkThumb = domainModel.strDrinkThumb
         )

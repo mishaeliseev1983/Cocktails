@@ -1,4 +1,4 @@
-package com.melyseev.cocktails.network.model
+package com.melyseev.cocktails.network.model.drink_short
 
 import com.google.gson.annotations.SerializedName
 
@@ -8,7 +8,7 @@ data class DrinkShortDto (
     //val strDrinkThumb: String
 
     @SerializedName("idDrink")
-    var idDink: String,
+    var idDrink: String,
 
     @SerializedName("strDrink")
     var strDrink: String,
