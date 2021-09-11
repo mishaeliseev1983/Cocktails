@@ -13,7 +13,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import com.melyseev.cocktails.domain.model.DrinkShort
-import com.melyseev.cocktails.util.DEFAULT_RECIPE_IMAGE
+import com.melyseev.cocktails.util.DEFAULT_DRINK_IMAGE
 import com.melyseev.cocktails.util.loadPicture
 
 @Composable
@@ -31,14 +31,14 @@ fun DrinkCard(drink: DrinkShort, onClick: () -> Unit, index: Int){
         Column {
 
             drink.strDrinkThumb?.let {
-                val image = loadPicture(url = it, defaultImage = DEFAULT_RECIPE_IMAGE).value
+                val image = loadPicture(url = it, defaultImage = DEFAULT_DRINK_IMAGE).value
 
 
                 image?.let {
                     Image(
                         bitmap = image.asImageBitmap(),
                         contentDescription = null,
-                        modifier = Modifier.fillMaxWidth().height(225.dp),
+                        modifier = Modifier.fillMaxWidth().height(255.dp),
                         contentScale = ContentScale.Crop
                     )
                 }

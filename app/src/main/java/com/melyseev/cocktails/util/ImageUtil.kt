@@ -11,7 +11,7 @@ import com.bumptech.glide.request.transition.Transition
 import com.melyseev.cocktails.R
 import kotlinx.coroutines.delay
 
-const val DEFAULT_RECIPE_IMAGE = R.drawable.empty_plate
+const val DEFAULT_DRINK_IMAGE = R.drawable.no_result
 
 @Composable
 fun loadPicture(url: String, @DrawableRes defaultImage: Int): MutableState<Bitmap?> {

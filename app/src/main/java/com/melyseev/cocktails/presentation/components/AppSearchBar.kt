@@ -39,6 +39,7 @@ fun AppSearchBar(
     onChangeCategoryScrollPosition:(Int)->Unit,
     selectedCategory: DrinkCategory?,
     categoryScrollPosition: Int,
+    //onShowFilter: @Composable () -> Unit,
     onToggleTheme:()->Unit
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -81,14 +82,14 @@ fun AppSearchBar(
                     textStyle = TextStyle(color = MaterialTheme.colors.onSurface),
                     colors = TextFieldDefaults.textFieldColors(backgroundColor = MaterialTheme.colors.surface),
                     //backgroundColor = TextStyle(color = MaterialTheme.colors.surface),
-                    onValueChange = { newValue ->
-                        onQueryChange(newValue)
+                    onValueChange = {
+                            newValue -> onQueryChange(newValue)
                     })
 
 
                 IconButton(
                     modifier = Modifier.align(Alignment.CenterVertically),
-                    onClick = onToggleTheme,
+                    onClick = { onToggleTheme()  },
                 ) {
 
                     Icon(imageVector = Icons.Filled.MoreVert, contentDescription = "")
@@ -131,7 +132,7 @@ fun AppSearchBar(
 
                     DrinkViewCategoryChip(
                         category = category1.value,
-                        isSelected = selectedCategory == category1,
+                        isSelected = selectedCategory?.value.equals(category1.value),
                         onExecuteSearch = {
                             newSearch()
                         },

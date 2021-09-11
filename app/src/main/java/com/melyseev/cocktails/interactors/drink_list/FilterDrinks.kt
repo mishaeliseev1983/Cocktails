@@ -6,6 +6,9 @@ import com.melyseev.cocktails.domain.model.DrinkShort
 import com.melyseev.cocktails.network.RetrofitService
 import com.melyseev.cocktails.network.model.drink_short.DrinkShortDtoMapper
 import com.melyseev.cocktails.network.response.DrinkFilterResponse
+import com.melyseev.cocktails.presentation.ui.drink_list.DrinkCategory
+import com.melyseev.cocktails.presentation.ui.drink_list.getAlcoholicValues
+import com.melyseev.cocktails.presentation.ui.drink_list.getAllDrinkCategories
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -43,7 +46,16 @@ class FilterDrinks(
     ):List<DrinkShort>{
         //from the network
         Log.d(TAG,  "query = $query")
-        val recipesDtoResults: DrinkFilterResponse =  retrofitService.filter( query = query )
-        return  drinkShortDtoMapper.fromDomainList(recipesDtoResults.results)
+
+
+        for (category in getAllDrinkCategories())
+            if(query == category.value) {
+                val recipesDtoResults = retrofitService.filter(query = query)
+                return drinkShortDtoMapper.fromDomainList(recipesDtoResults.results)
+            }
+
+        val recipesDtoResults = retrofitService.filterByIngredient(ingredient = query)
+        return drinkShortDtoMapper.fromDomainList(recipesDtoResults.results)
+
     }
 }

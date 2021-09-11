@@ -28,19 +28,29 @@ class DrinkListViewModel
     var loading = mutableStateOf(false)
     val selectedCategory:MutableState<DrinkCategory?> = mutableStateOf(null)
 
+    var filterAlcoholic = mutableStateOf(true)
+    var filterIngredients = mutableStateOf(false)
+    var filterGlass = mutableStateOf(false)
+    var filterCategory = mutableStateOf(false)
+
     init {
         onTriggerEvent(DrinkListEvent.NewFilterAlcoholicEvent)
     }
 
     fun filterAlcoholicDrinks(){
 
+        resetSearchState()
         Log.d(TAG, "new filter query ${query.value}")
         filterDrinks.execute(query = query.value).onEach {
             dataState ->
             loading.value = dataState.loading
 
+            if(dataState.data == null){
+                println("new data set is null")
+            }
             dataState.data?.let {
-                    list -> drinks.value = list
+                    println("new data set! size list ${it.size}")
+                    drinks.value = it
             }
             dataState.error?.let {
                     error -> Log.d(TAG, "filter: $error")
@@ -91,5 +101,77 @@ class DrinkListViewModel
     fun onChangeCategoryScrollPosition(position: Int) {
         categoryScrollPosition  = position
     }
+
+    /**
+     * Called when a new search is executed.
+     */
+    private fun resetSearchState() {
+        drinks.value = listOf()
+        //onChangeRecipeScrollPosition(0)
+        if (selectedCategory.value?.value != query.value) clearSelectedCategory()
+    }
+
+    private fun clearSelectedCategory() {
+        setSelectedCategory(null)
+        selectedCategory.value = null
+    }
+
+    private fun setSelectedCategory(category: DrinkCategory?) {
+        selectedCategory.value = category
+    }
+
+    fun onChangedCheckedFilter(newCategory: String) {
+        when (newCategory) {
+            "a" -> {
+                filterAlcoholic.value = true
+                filterIngredients.value = false
+                filterGlass.value = false
+                filterCategory.value = false
+            }
+            "i" -> {
+                filterAlcoholic.value = false
+                filterIngredients.value = true
+                filterGlass.value = false
+                filterCategory.value = false
+            }
+            "g" -> {
+                filterAlcoholic.value = false
+                filterIngredients.value = false
+                filterGlass.value = true
+                filterCategory.value = false
+            }
+            "c" -> {
+                filterAlcoholic.value = false
+                filterIngredients.value = false
+                filterGlass.value = false
+                filterCategory.value = true
+            }
+
+            else -> { // Note the block
+                print("$newCategory unknown !")
+            }
+        }
+    }
+
+        fun getCheckedStateByValue(category: String): Boolean {
+
+            if(category=="a") return  filterAlcoholic.value
+            if(category=="i") return  filterIngredients.value
+            if(category=="g") return  filterGlass.value
+            if(category=="c") return  filterCategory.value
+            /*     when (category) {
+                     "a" -> filterAlcoholic.value
+                     "i" -> filterIngredients.value
+                     "g" -> filterGlass.value
+                     "c" -> filterCategory.value
+                     else -> false
+                 }
+
+             */
+            return false
+        }
+
+
+
 
 }

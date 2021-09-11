@@ -57,7 +57,6 @@ class DataStoreDarkTheme
             preferences[IS_DARK_THEME]?.let{
 
                     isDarkTheme->
-                print(" is_dark = $isDarkTheme")
                 isDark.value = isDarkTheme
             }
 

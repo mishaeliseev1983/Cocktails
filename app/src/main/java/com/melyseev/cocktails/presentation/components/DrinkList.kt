@@ -21,7 +21,11 @@ fun DrinkList(
 ) {
     if (loading && drinks.isEmpty()) {
 
+    } else if(drinks.isEmpty()){
+        println("drinks list empty")
+        NothingResult()
     } else {
+        println("drinks list not empty")
         LazyColumn {
             itemsIndexed(items = drinks) { index, one_drink ->
                 onChangeScrollPosition(index)

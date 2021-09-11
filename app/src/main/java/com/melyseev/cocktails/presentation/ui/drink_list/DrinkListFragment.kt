@@ -5,9 +5,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.layout.Box
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.rememberScaffoldState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
@@ -17,6 +20,7 @@ import com.melyseev.cocktails.BaseApplication
 import com.melyseev.cocktails.datastore.DataStoreDarkTheme
 import com.melyseev.cocktails.presentation.components.AppSearchBar
 import com.melyseev.cocktails.presentation.components.DrinkList
+import com.melyseev.cocktails.presentation.components.FilterDialog
 import com.melyseev.cocktails.presentation.theme.AppTheme
 import com.melyseev.cocktails.presentation.util.ConnectivityManagerNetworkAvailable
 import dagger.hilt.android.AndroidEntryPoint
@@ -61,44 +65,63 @@ class DrinkListFragment: Fragment() {
 
             setContent {
 
-                AppTheme(
-                    darkTheme = darkTheme.isDark.value,
-                    isNetworkAvailable = viewModel.connectivityManager.isNetworkAvailable.value
-                ) {
-                    var drinks = viewModel.drinks.value
-                    //val page = viewModel.page.value
-                    val loading = viewModel.loading.value
-                    val categoryScrollPosition = viewModel.categoryScrollPosition
-                    val scaffoldState = rememberScaffoldState()
+                Box {
+                    val showFilterDialog = remember{mutableStateOf(false)}
+                    AppTheme(
+                        darkTheme = darkTheme.isDark.value,
+                        isNetworkAvailable = viewModel.connectivityManager.isNetworkAvailable.value
+                    ) {
+                        var drinks = viewModel.drinks.value
+                        //val page = viewModel.page.value
+                        val loading = viewModel.loading.value
+                        val categoryScrollPosition = viewModel.categoryScrollPosition
+                        val scaffoldState = rememberScaffoldState()
 
-                    Scaffold(
 
-                        topBar = {
-                            AppSearchBar(
-                                query = viewModel.query.value,
-                                newSearch = { viewModel.onTriggerEvent(DrinkListEvent.NewFilterAlcoholicEvent) },
-                                onQueryChange = viewModel::onQueryChange,
-                                onSelectedCategoryChanged = viewModel::onSelectedCategoryChanged,
-                                onChangeCategoryScrollPosition = {
-                                viewModel::onChangeCategoryScrollPosition
-                                },
-                                selectedCategory = viewModel.selectedCategory.value,
-                                categoryScrollPosition = categoryScrollPosition,
-                                onToggleTheme = { darkTheme.toggleTheme() }
+                        Scaffold(
+
+                            topBar = {
+                                AppSearchBar(
+                                    query = viewModel.query.value,
+                                    newSearch = { viewModel.onTriggerEvent(DrinkListEvent.NewFilterAlcoholicEvent) },
+                                    onQueryChange = viewModel::onQueryChange,
+                                    onSelectedCategoryChanged = viewModel::onSelectedCategoryChanged,
+                                    onChangeCategoryScrollPosition = {
+                                        viewModel::onChangeCategoryScrollPosition
+                                    },
+                                    selectedCategory = viewModel.selectedCategory.value,
+                                    categoryScrollPosition = categoryScrollPosition,
+                                    onToggleTheme = {showFilterDialog.value = true}//{ darkTheme.toggleTheme() },
+                                )
+                            },
+                            scaffoldState = scaffoldState,
+                        ) {
+                            DrinkList(
+                                loading = loading,
+                                drinks = drinks,
+                                onChangeScrollPosition = {},
+                                navController = findNavController(),
+                                scaffoldState = scaffoldState
                             )
-                        },
-                        scaffoldState = scaffoldState,
-                    ){
-                        DrinkList(
-                            loading = loading,
-                            drinks = drinks,
-                            onChangeScrollPosition = {},
-                            navController = findNavController(),
-                            scaffoldState = scaffoldState
-                        )
+                        }
                     }
-                }
 
+
+                    if(showFilterDialog.value)
+                        FilterDialog(
+
+                            getValueCheck = {
+                               return@FilterDialog viewModel.getCheckedStateByValue(it)
+                            }
+                            ,
+                            onChecked = {
+                                newCategory ->
+                                viewModel.onChangedCheckedFilter(newCategory)
+                            } ) {
+
+                                    showFilterDialog.value = false
+                        }
+                }
             }
         }
 

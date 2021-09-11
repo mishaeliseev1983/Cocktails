@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.melyseev.cocktails.domain.data.DataState
 import com.melyseev.cocktails.domain.model.DrinkFull
 import com.melyseev.cocktails.interactors.drink.GetFullbyIdDrink
+import com.melyseev.cocktails.presentation.util.ConnectivityManagerNetworkAvailable
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -18,6 +19,7 @@ import javax.inject.Inject
 class DrinkFullViewModel
 @Inject constructor(
     private val useCaseGetFullbyIdDrink: GetFullbyIdDrink,
+    val connectivityManager: ConnectivityManagerNetworkAvailable
 ): ViewModel() {
 
     var loading = mutableStateOf(false)

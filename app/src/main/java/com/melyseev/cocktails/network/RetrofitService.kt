@@ -8,8 +8,22 @@ import retrofit2.http.Query
 interface RetrofitService {
     @GET("filter.php")
     suspend fun filter(
-        @Query("a") query: String
+        @Query("g") query: String
     ): DrinkFilterResponse
+
+
+    @GET("filter.php")
+    suspend fun filterByIngredient(
+        @Query("i") ingredient: String
+    ): DrinkFilterResponse
+
+    @GET("filter.php")
+    suspend fun filterByGlass(
+        @Query("g") ingredient: String
+    ): DrinkFilterResponse
+
+    //by ingredienst
+    //www.thecocktaildb.com/api/json/v1/1/filter.php?i=orange
 
 
     @GET("lookup.php")
