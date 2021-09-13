@@ -38,6 +38,17 @@ fun DrinkFullView(drinkFull: DrinkFull) {
         listIngredients.add(drinkFull.strIngredient5?:"")
         listIngredients.add(drinkFull.strIngredient6?:"")
 
+        listIngredients.add(drinkFull.strIngredient7?:"")
+        listIngredients.add(drinkFull.strIngredient8?:"")
+        listIngredients.add(drinkFull.strIngredient9?:"")
+        listIngredients.add(drinkFull.strIngredient10?:"")
+        listIngredients.add(drinkFull.strIngredient11?:"")
+        listIngredients.add(drinkFull.strIngredient12?:"")
+        listIngredients.add(drinkFull.strIngredient13?:"")
+        listIngredients.add(drinkFull.strIngredient14?:"")
+        listIngredients.add(drinkFull.strIngredient15?:"")
+
+
         val listMeasures = mutableListOf<String>()
         listMeasures.add(drinkFull.strMeasure1?:"")
         listMeasures.add(drinkFull.strMeasure2?:"")
@@ -45,6 +56,17 @@ fun DrinkFullView(drinkFull: DrinkFull) {
         listMeasures.add(drinkFull.strMeasure4?:"")
         listMeasures.add(drinkFull.strMeasure5?:"")
         listMeasures.add(drinkFull.strMeasure6?:"")
+
+        listMeasures.add(drinkFull.strMeasure7?:"")
+        listMeasures.add(drinkFull.strMeasure8?:"")
+        listMeasures.add(drinkFull.strMeasure9?:"")
+        listMeasures.add(drinkFull.strMeasure10?:"")
+        listMeasures.add(drinkFull.strMeasure11?:"")
+        listMeasures.add(drinkFull.strMeasure12?:"")
+        listMeasures.add(drinkFull.strMeasure13?:"")
+        listMeasures.add(drinkFull.strMeasure14?:"")
+        listMeasures.add(drinkFull.strMeasure15?:"")
+
 
         item {
             val image = loadPicture(url = url, defaultImage = DEFAULT_DRINK_IMAGE).value
