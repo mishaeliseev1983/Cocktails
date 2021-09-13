@@ -91,6 +91,8 @@ class DrinkListFragment: Fragment() {
                                     },
                                     selectedCategory = viewModel.selectedCategory.value,
                                     categoryScrollPosition = categoryScrollPosition,
+                                    getDrinkCategoriesValues = viewModel.drinkCategoryValues::getValuesByCurrentCategory,
+                                    getIndexCategoryValue = {viewModel.drinkCategoryValues.getIndexDrinkCategoryValue(viewModel.selectedCategory.value)},
                                     onToggleTheme = {showFilterDialog.value = true}//{ darkTheme.toggleTheme() },
                                 )
                             },

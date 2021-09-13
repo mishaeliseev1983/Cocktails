@@ -7,8 +7,8 @@ import retrofit2.http.Query
 
 interface RetrofitService {
     @GET("filter.php")
-    suspend fun filter(
-        @Query("g") query: String
+    suspend fun filterByAlcoholic(
+        @Query("a") alco: String
     ): DrinkFilterResponse
 
 
@@ -19,7 +19,13 @@ interface RetrofitService {
 
     @GET("filter.php")
     suspend fun filterByGlass(
-        @Query("g") ingredient: String
+        @Query("g") glass: String
+    ): DrinkFilterResponse
+
+
+    @GET("filter.php")
+    suspend fun filterByCategory(
+        @Query("c") category: String
     ): DrinkFilterResponse
 
     //by ingredienst

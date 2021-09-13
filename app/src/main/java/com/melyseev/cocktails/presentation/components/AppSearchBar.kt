@@ -24,9 +24,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.melyseev.cocktails.presentation.ui.drink_list.DrinkCategory
-import com.melyseev.cocktails.presentation.ui.drink_list.getAllDrinkCategories
-import com.melyseev.cocktails.presentation.ui.drink_list.getIndexDrinkCategory
 import kotlinx.coroutines.launch
 
 @ExperimentalComposeUiApi
@@ -37,9 +34,10 @@ fun AppSearchBar(
     onQueryChange:(String)->Unit,
     onSelectedCategoryChanged:(String)->Unit,
     onChangeCategoryScrollPosition:(Int)->Unit,
-    selectedCategory: DrinkCategory?,
+    selectedCategory: String,
     categoryScrollPosition: Int,
-    //onShowFilter: @Composable () -> Unit,
+    getDrinkCategoriesValues: ()-> MutableList<String>,
+    getIndexCategoryValue:(String) -> Int,
     onToggleTheme:()->Unit
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -128,18 +126,18 @@ fun AppSearchBar(
 
                 Log.w(" --", "categoryScrollPosition - $categoryScrollPosition")
 
-                itemsIndexed(items = getAllDrinkCategories()) { index, category1 ->
+                itemsIndexed(items = getDrinkCategoriesValues()) { index, categoryValue ->
 
                     DrinkViewCategoryChip(
-                        category = category1.value,
-                        isSelected = selectedCategory?.value.equals(category1.value),
+                        category = categoryValue,
+                        isSelected = selectedCategory == categoryValue,
                         onExecuteSearch = {
                             newSearch()
                         },
                         onSelectedCategoryChanged = {
                             onSelectedCategoryChanged(it)
                             onChangeCategoryScrollPosition(
-                                getIndexDrinkCategory(category1.value)
+                                getIndexCategoryValue(categoryValue)
                             )
                         }
                     )

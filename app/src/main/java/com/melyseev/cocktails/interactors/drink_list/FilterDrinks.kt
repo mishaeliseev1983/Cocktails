@@ -5,10 +5,9 @@ import com.melyseev.cocktails.domain.data.DataState
 import com.melyseev.cocktails.domain.model.DrinkShort
 import com.melyseev.cocktails.network.RetrofitService
 import com.melyseev.cocktails.network.model.drink_short.DrinkShortDtoMapper
-import com.melyseev.cocktails.network.response.DrinkFilterResponse
-import com.melyseev.cocktails.presentation.ui.drink_list.DrinkCategory
 import com.melyseev.cocktails.presentation.ui.drink_list.getAlcoholicValues
-import com.melyseev.cocktails.presentation.ui.drink_list.getAllDrinkCategories
+import com.melyseev.cocktails.presentation.ui.drink_list.getCategoryValues
+import com.melyseev.cocktails.presentation.ui.drink_list.getGlassValues
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -48,11 +47,24 @@ class FilterDrinks(
         Log.d(TAG,  "query = $query")
 
 
-        for (category in getAllDrinkCategories())
-            if(query == category.value) {
-                val recipesDtoResults = retrofitService.filter(query = query)
+        for (category in getAlcoholicValues())
+            if(query == category) {
+                val recipesDtoResults = retrofitService.filterByAlcoholic(alco = query)
                 return drinkShortDtoMapper.fromDomainList(recipesDtoResults.results)
             }
+
+        for (category in getGlassValues())
+            if(query == category) {
+                val recipesDtoResults = retrofitService.filterByGlass(glass = query)
+                return drinkShortDtoMapper.fromDomainList(recipesDtoResults.results)
+            }
+
+        for (category in getCategoryValues())
+            if(query == category) {
+                val recipesDtoResults = retrofitService.filterByCategory(category = query)
+                return drinkShortDtoMapper.fromDomainList(recipesDtoResults.results)
+            }
+
 
         val recipesDtoResults = retrofitService.filterByIngredient(ingredient = query)
         return drinkShortDtoMapper.fromDomainList(recipesDtoResults.results)

@@ -23,10 +23,13 @@ class DrinkListViewModel
                     val connectivityManager: ConnectivityManagerNetworkAvailable
                     ):ViewModel(){
     val drinks: MutableState<List<DrinkShort>> = mutableStateOf(listOf())
-    val query = mutableStateOf("Alcoholic")
+    var query = mutableStateOf("")
     var categoryScrollPosition: Int = -1
     var loading = mutableStateOf(false)
-    val selectedCategory:MutableState<DrinkCategory?> = mutableStateOf(null)
+    val selectedCategory = mutableStateOf("")
+
+
+    val drinkCategoryValues = DrinkCategoryValues()
 
     var filterAlcoholic = mutableStateOf(true)
     var filterIngredients = mutableStateOf(false)
@@ -34,6 +37,10 @@ class DrinkListViewModel
     var filterCategory = mutableStateOf(false)
 
     init {
+
+        query.value = drinkCategoryValues.currentCategory
+        selectedCategory.value = drinkCategoryValues.currentCategory
+
         onTriggerEvent(DrinkListEvent.NewFilterAlcoholicEvent)
     }
 
@@ -92,10 +99,10 @@ class DrinkListViewModel
         query.value = newer
     }
 
-    fun onSelectedCategoryChanged(category: String){
-        val newCategory= getDrinkCategory(category)
+    fun onSelectedCategoryChanged(newCategory: String){
+        //val newCategory= getDrinkCategory(category)
         selectedCategory.value =newCategory
-        onQueryChange(category)
+        onQueryChange(newCategory)
     }
 
     fun onChangeCategoryScrollPosition(position: Int) {
@@ -108,43 +115,50 @@ class DrinkListViewModel
     private fun resetSearchState() {
         drinks.value = listOf()
         //onChangeRecipeScrollPosition(0)
-        if (selectedCategory.value?.value != query.value) clearSelectedCategory()
+        if (selectedCategory.value != query.value) clearSelectedCategory()
     }
 
     private fun clearSelectedCategory() {
-        setSelectedCategory(null)
-        selectedCategory.value = null
+        selectedCategory.value = ""
     }
 
-    private fun setSelectedCategory(category: DrinkCategory?) {
-        selectedCategory.value = category
-    }
+
 
     fun onChangedCheckedFilter(newCategory: String) {
+
+        drinkCategoryValues.currentCategory = ""
         when (newCategory) {
             "a" -> {
-                filterAlcoholic.value = true
+                filterAlcoholic.value = !filterAlcoholic.value
                 filterIngredients.value = false
                 filterGlass.value = false
                 filterCategory.value = false
+                if(filterAlcoholic.value)
+                    drinkCategoryValues.currentCategory = "Alcoholic"
             }
             "i" -> {
                 filterAlcoholic.value = false
-                filterIngredients.value = true
+                filterIngredients.value = !filterIngredients.value
                 filterGlass.value = false
                 filterCategory.value = false
+                if(filterIngredients.value)
+                    drinkCategoryValues.currentCategory = "Ingredients"
             }
             "g" -> {
                 filterAlcoholic.value = false
                 filterIngredients.value = false
-                filterGlass.value = true
+                filterGlass.value = !filterGlass.value
                 filterCategory.value = false
+                if(filterGlass.value)
+                    drinkCategoryValues.currentCategory = "Glass"
             }
             "c" -> {
                 filterAlcoholic.value = false
                 filterIngredients.value = false
                 filterGlass.value = false
-                filterCategory.value = true
+                filterCategory.value = !filterCategory.value
+                if(filterCategory.value)
+                    drinkCategoryValues.currentCategory = "Category"
             }
 
             else -> { // Note the block
@@ -159,15 +173,6 @@ class DrinkListViewModel
             if(category=="i") return  filterIngredients.value
             if(category=="g") return  filterGlass.value
             if(category=="c") return  filterCategory.value
-            /*     when (category) {
-                     "a" -> filterAlcoholic.value
-                     "i" -> filterIngredients.value
-                     "g" -> filterGlass.value
-                     "c" -> filterCategory.value
-                     else -> false
-                 }
-
-             */
             return false
         }
 
