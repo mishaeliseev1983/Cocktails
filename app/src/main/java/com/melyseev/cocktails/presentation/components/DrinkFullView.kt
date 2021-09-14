@@ -132,7 +132,7 @@ fun DrinkFullView(drinkFull: DrinkFull) {
                                     .fillMaxWidth()
                                     .wrapContentWidth(Alignment.End)
                                     .align(Alignment.CenterVertically),
-                                style = MaterialTheme.typography.h5
+                                style = MaterialTheme.typography.h6
                             )
                         }
                     }

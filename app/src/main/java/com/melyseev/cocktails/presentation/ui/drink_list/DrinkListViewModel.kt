@@ -19,7 +19,8 @@ const val TAG = "DrinkListViewModel"
 @HiltViewModel
 class DrinkListViewModel
 @Inject constructor(private val filterDrinks: FilterDrinks,
-                    val connectivityManager: ConnectivityManagerNetworkAvailable
+                    val connectivityManager: ConnectivityManagerNetworkAvailable,
+                    val drinkCategoryValues: DrinkCategoryValues
                     ):ViewModel(){
     val drinks: MutableState<List<DrinkShort>> = mutableStateOf(listOf())
     var query = mutableStateOf("")
@@ -27,8 +28,6 @@ class DrinkListViewModel
     var loading = mutableStateOf(false)
     val selectedCategory = mutableStateOf("")
 
-
-    val drinkCategoryValues = DrinkCategoryValues()
 
     var filterAlcoholic = mutableStateOf(true)
     var filterIngredients = mutableStateOf(false)
