@@ -18,7 +18,6 @@ const val TAG = "DrinkListViewModel"
 
 @HiltViewModel
 class DrinkListViewModel
-//@Inject constructor(private val filterDrinks: FilterDrinks): ViewModel() {
 @Inject constructor(private val filterDrinks: FilterDrinks,
                     val connectivityManager: ConnectivityManagerNetworkAvailable
                     ):ViewModel(){
@@ -40,7 +39,6 @@ class DrinkListViewModel
 
         query.value = drinkCategoryValues.currentCategory
         selectedCategory.value = drinkCategoryValues.currentCategory
-
         onTriggerEvent(DrinkListEvent.NewFilterAlcoholicEvent)
     }
 
@@ -123,6 +121,12 @@ class DrinkListViewModel
     }
 
 
+    fun updateViewWithNewCategory(newCategory: String){
+        drinkCategoryValues.currentCategory = newCategory
+        selectedCategory.value = drinkCategoryValues.getValuesByCurrentCategory()[0]
+        query.value = selectedCategory.value
+        //onTriggerEvent(DrinkListEvent.NewFilterAlcoholicEvent)
+    }
 
     fun onChangedCheckedFilter(newCategory: String) {
 
@@ -134,7 +138,7 @@ class DrinkListViewModel
                 filterGlass.value = false
                 filterCategory.value = false
                 if(filterAlcoholic.value)
-                    drinkCategoryValues.currentCategory = "Alcoholic"
+                    updateViewWithNewCategory("Alcoholic")
             }
             "i" -> {
                 filterAlcoholic.value = false
@@ -142,7 +146,11 @@ class DrinkListViewModel
                 filterGlass.value = false
                 filterCategory.value = false
                 if(filterIngredients.value)
-                    drinkCategoryValues.currentCategory = "Ingredients"
+                    updateViewWithNewCategory("Ingredients")
+                    /*drinkCategoryValues.currentCategory = "Ingredients"
+                    selectedCategory.value = drinkCategoryValues.getValuesByCurrentCategory()[0]
+                    query.value = selectedCategory.value
+                    onTriggerEvent(DrinkListEvent.NewFilterAlcoholicEvent)*/
             }
             "g" -> {
                 filterAlcoholic.value = false
@@ -150,7 +158,7 @@ class DrinkListViewModel
                 filterGlass.value = !filterGlass.value
                 filterCategory.value = false
                 if(filterGlass.value)
-                    drinkCategoryValues.currentCategory = "Glass"
+                    updateViewWithNewCategory("Glass")
             }
             "c" -> {
                 filterAlcoholic.value = false
@@ -158,7 +166,7 @@ class DrinkListViewModel
                 filterGlass.value = false
                 filterCategory.value = !filterCategory.value
                 if(filterCategory.value)
-                    drinkCategoryValues.currentCategory = "Category"
+                   updateViewWithNewCategory("Category")
             }
 
             else -> { // Note the block

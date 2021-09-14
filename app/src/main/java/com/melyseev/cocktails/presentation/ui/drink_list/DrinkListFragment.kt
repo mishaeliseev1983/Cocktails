@@ -120,9 +120,9 @@ class DrinkListFragment: Fragment() {
                                 newCategory ->
                                 viewModel.onChangedCheckedFilter(newCategory)
                             } ) {
-
                                     showFilterDialog.value = false
-                        }
+                                    viewModel.onTriggerEvent(DrinkListEvent.NewFilterAlcoholicEvent)
+                            }
                 }
             }
         }

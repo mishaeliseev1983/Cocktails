@@ -109,30 +109,32 @@ fun DrinkFullView(drinkFull: DrinkFull) {
       listIngredients.forEachIndexed { index, one ->
 
             one?.let {
-                item {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(10.dp)
-                    ) {
-                        Text(
-                            text = it,
-                            modifier = Modifier
-                                .fillMaxWidth(0.65f)
-                                .wrapContentWidth(Alignment.Start),
-                            style = MaterialTheme.typography.h5
-                        )
-
-
-                        val measure = listMeasures[index]
-                        Text(
-                            text = measure,
+                if(it.isNotEmpty()) {
+                    item {
+                        Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .wrapContentWidth(Alignment.End)
-                                .align(Alignment.CenterVertically),
-                            style = MaterialTheme.typography.h5
-                        )
+                                .padding(10.dp)
+                        ) {
+                            Text(
+                                text = it,
+                                modifier = Modifier
+                                    .fillMaxWidth(0.65f)
+                                    .wrapContentWidth(Alignment.Start),
+                                style = MaterialTheme.typography.h5
+                            )
+
+
+                            val measure = listMeasures[index]
+                            Text(
+                                text = measure,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .wrapContentWidth(Alignment.End)
+                                    .align(Alignment.CenterVertically),
+                                style = MaterialTheme.typography.h5
+                            )
+                        }
                     }
                 }
             }
