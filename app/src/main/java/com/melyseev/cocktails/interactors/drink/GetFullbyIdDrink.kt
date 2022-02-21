@@ -1,6 +1,10 @@
 package com.melyseev.cocktails.interactors.drink
 
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
+import com.melyseev.cocktails.cache.model.drinkFull.DrinkFullDao
+import com.melyseev.cocktails.cache.model.drinkFull.DrinkFullEntityMapper
+import com.melyseev.cocktails.cache.model.drinkShort.DrinkShortEntityMapper
 import com.melyseev.cocktails.domain.data.DataState
 import com.melyseev.cocktails.domain.model.DrinkFull
 import com.melyseev.cocktails.domain.model.DrinkShort
@@ -14,18 +18,32 @@ import kotlinx.coroutines.flow.flow
 
 class GetFullbyIdDrink(
     private val retrofitService: RetrofitService,
-    private val drinkFullDtoMapper: DrinkFullDtoMapper
-) {
+    private val drinkFullDtoMapper: DrinkFullDtoMapper,
+    private val fullDao: DrinkFullDao,
+    private val fullEntityMapper: DrinkFullEntityMapper,
+    ) {
 
     fun execute(idDrink: String): Flow<DataState<DrinkFull>> = flow {
         Log.d(TAG, " start  execute" )
         try {
             emit(DataState.loading())
-            Log.d(TAG, " start  drink full 1 " )
-            delay(1_000)
-            Log.d(TAG, " start  drink full 2" )
 
-            val result: DrinkFull =  getDrinkFullbyIdFromNetwork(idDrink = idDrink)
+
+            var result : DrinkFull
+            //read
+            Log.d(TAG, " reading from database" )
+            val fullEntity = fullDao.getFullDrinkById(idDrinkOne = idDrink)
+            if(fullEntity!=null){
+                result = fullEntityMapper.mapToDomain(fullEntity)
+            }else
+            {
+                Log.d(TAG, " reading from Network" )
+                result = getDrinkFullbyIdFromNetwork(idDrink = idDrink)
+
+                //write
+                val fullEntity = fullEntityMapper.mapFromDomain(result)
+                fullDao.insertDrinkFull(fullEntity)
+            }
             emit(DataState.success(result))
         }catch (e: Exception){
             emit(DataState.error<DrinkFull>(e.message?:"Unknown error"))

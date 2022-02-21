@@ -1,6 +1,8 @@
 package com.melyseev.cocktails.presentation.components
 
 import android.util.Log
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,11 +16,13 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
@@ -32,17 +36,19 @@ fun AppSearchBar(
     query: String,
     newSearch:()->Unit,
     onQueryChange:(String)->Unit,
-    onSelectedCategoryChanged:(String)->Unit,
-    onChangeCategoryScrollPosition:(Int)->Unit,
-    selectedCategory: String,
-    categoryScrollPosition: Int,
+    onSelectedValueCategoryChanged:(String)->Unit,
+    /*
+    onChangeValueCategoryScrollPosition:(Int)->Unit,
+
+     */
+    //currentCategory: String,
+    selectedValueCategory: String,
+    categoryValueScrollPosition: Int,
     getDrinkCategoriesValues: ()-> MutableList<String>,
-    getIndexCategoryValue:(String) -> Int,
+   /* getIndexCategoryValue:(String) -> Int,*/
     onToggleTheme:()->Unit
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
-
-
     val stateScrollPosition = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
 
@@ -53,6 +59,7 @@ fun AppSearchBar(
         color = MaterialTheme.colors.surface
     ) {
 
+
         Column {
 
             Row(modifier = Modifier.fillMaxWidth()) {
@@ -62,7 +69,7 @@ fun AppSearchBar(
                         .padding(8.dp),
 
                     value = query,
-                    label = { Text(text = "Search") },
+                    label = { Text(text = "Search by first letter") },
 
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Text,
@@ -81,7 +88,8 @@ fun AppSearchBar(
                     colors = TextFieldDefaults.textFieldColors(backgroundColor = MaterialTheme.colors.surface),
                     //backgroundColor = TextStyle(color = MaterialTheme.colors.surface),
                     onValueChange = {
-                            newValue -> onQueryChange(newValue)
+                            newValue ->
+                               onQueryChange(newValue)
                     })
 
 
@@ -124,21 +132,25 @@ fun AppSearchBar(
 
             ) {
 
-                Log.w(" --", "categoryScrollPosition - $categoryScrollPosition")
+                Log.w(" --", "categoryScrollPosition - $categoryValueScrollPosition")
 
                 itemsIndexed(items = getDrinkCategoriesValues()) { index, categoryValue ->
 
                     DrinkViewCategoryChip(
                         category = categoryValue,
-                        isSelected = selectedCategory == categoryValue,
+                        isSelected = selectedValueCategory == categoryValue,
                         onExecuteSearch = {
                             newSearch()
                         },
-                        onSelectedCategoryChanged = {
-                            onSelectedCategoryChanged(it)
-                            onChangeCategoryScrollPosition(
+                        onSelectedValueCategoryChanged = {
+                            onSelectedValueCategoryChanged(it)
+
+                            /*
+                            onChangeValueCategoryScrollPosition(
                                 getIndexCategoryValue(categoryValue)
                             )
+
+                             */
                         }
                     )
                 }
@@ -146,9 +158,11 @@ fun AppSearchBar(
 
 
         }
+
+
         coroutineScope.launch {
-            if (categoryScrollPosition != -1 ) {
-                stateScrollPosition.scrollToItem(categoryScrollPosition)
+            if (categoryValueScrollPosition != -1 ) {
+                stateScrollPosition.scrollToItem(categoryValueScrollPosition)
             }
         }
     }

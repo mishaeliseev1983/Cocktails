@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 fun DrinkViewCategoryChip (
         category: String,
         isSelected: Boolean = false,
-        onSelectedCategoryChanged:(String)->Unit,
+        onSelectedValueCategoryChanged:(String)->Unit,
         onExecuteSearch:()->Unit
 ){
         Surface(
@@ -29,7 +29,7 @@ fun DrinkViewCategoryChip (
             Row(modifier =
             Modifier.toggleable(value = isSelected,
                 onValueChange = {
-                    onSelectedCategoryChanged(category)
+                    onSelectedValueCategoryChanged(category)
                     onExecuteSearch()
                 }
             )

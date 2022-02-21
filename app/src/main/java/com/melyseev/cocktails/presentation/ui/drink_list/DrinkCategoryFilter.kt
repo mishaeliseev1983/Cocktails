@@ -1,14 +1,8 @@
 package com.melyseev.cocktails.presentation.ui.drink_list
 
-class DrinkCategoryValues{
-    var currentCategory ="Alcoholic"
-    private var listFilterValues = mutableListOf<String>()
-    init{
-        listFilterValues= getValuesByCurrentCategory()
-    }
 
-    fun getValuesByCurrentCategory() =
-        when (currentCategory) {
+fun getValuesByCurrentCategory(category:String) =
+        when (category) {
             (DrinkCategoryFilter.ALCOHOLIC.value) -> getAlcoholicValues()
             (DrinkCategoryFilter.INGREDIENTS.value) -> getIngredientsValues()
             (DrinkCategoryFilter.GLASS.value) -> getGlassValues()
@@ -16,15 +10,15 @@ class DrinkCategoryValues{
                 else -> mutableListOf()
         }
 
-    fun getIndexDrinkCategoryValue(value: String): Int =
-        when (currentCategory) {
-            (DrinkCategoryFilter.ALCOHOLIC.value) -> getAlcoholicValues().indexOf(value)
-            (DrinkCategoryFilter.INGREDIENTS.value) -> getIngredientsValues().indexOf(value)
-            (DrinkCategoryFilter.GLASS.value) -> getGlassValues().indexOf(value)
-            (DrinkCategoryFilter.CATEGORY.value) -> getCategoryValues().indexOf(value)
+fun getIndexDrinkCategoryValue(category:String, valueOfCategory: String): Int =
+        when (category) {
+            (DrinkCategoryFilter.ALCOHOLIC.value) -> getAlcoholicValues().indexOf(valueOfCategory)
+            (DrinkCategoryFilter.INGREDIENTS.value) -> getIngredientsValues().indexOf(valueOfCategory)
+            (DrinkCategoryFilter.GLASS.value) -> getGlassValues().indexOf(valueOfCategory)
+            (DrinkCategoryFilter.CATEGORY.value) -> getCategoryValues().indexOf(valueOfCategory)
             else -> -1
         }
-}
+
 
 enum class DrinkCategoryFilter(val value:String) {
 
@@ -100,7 +94,16 @@ fun getGlassValues(): MutableList<String>{
 fun getCategoryValues(): MutableList<String>{
     return mutableListOf(CATEGORY_Filter.CAT1.value,
         CATEGORY_Filter.CAT2.value,
-        CATEGORY_Filter.CAT3.value)
+        CATEGORY_Filter.CAT3.value,
+        CATEGORY_Filter.CAT4.value,
+        CATEGORY_Filter.CAT5.value,
+        CATEGORY_Filter.CAT6.value,
+        CATEGORY_Filter.CAT7.value,
+        CATEGORY_Filter.CAT8.value,
+        CATEGORY_Filter.CAT9.value,
+        CATEGORY_Filter.CAT10.value,
+        CATEGORY_Filter.CAT11.value,
+    )
 }
 
 enum class ALCOHOLIC_Filter(val value:String) {
@@ -166,7 +169,15 @@ enum class INGREDIENTS_Filter(val value:String) {
 enum class CATEGORY_Filter(val value:String) {
     CAT1("Ordinary Drink"),
     CAT2("Cocktail"),
-    CAT3("Milk / Float / Shake")
+    CAT3("Milk / Float / Shake"),
+    CAT4("Other/Unknown"),
+    CAT5("Cocoa"),
+    CAT6("Shot"),
+    CAT7("Coffee / Tea"),
+    CAT8("Homemade Liqueur"),
+    CAT9("Punch / Party Drink"),
+    CAT10("Beer"),
+    CAT11("Soft Drink / Soda")
 }
 
 

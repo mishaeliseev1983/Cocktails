@@ -1,17 +1,20 @@
 package com.melyseev.cocktails.presentation.ui.drink_list
 
+import android.app.Application
 import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.melyseev.cocktails.datastore.DataStoreApplication
 import com.melyseev.cocktails.domain.model.DrinkShort
 import com.melyseev.cocktails.interactors.drink_list.FilterDrinks
-import com.melyseev.cocktails.presentation.util.ConnectivityManagerNetworkAvailable
+import com.melyseev.cocktails.network_status.ConnectivityManagerNetworkAvailable
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 const val TAG = "DrinkListViewModel"
@@ -19,63 +22,52 @@ const val TAG = "DrinkListViewModel"
 @HiltViewModel
 class DrinkListViewModel
 @Inject constructor(private val filterDrinks: FilterDrinks,
-                    val connectivityManager: ConnectivityManagerNetworkAvailable,
-                    val drinkCategoryValues: DrinkCategoryValues
+                    val dataStore: DataStoreApplication,
+                    val connectivityManager: ConnectivityManagerNetworkAvailable
                     ):ViewModel(){
+
+    var categoryScrollPosition: Int = -1
+    //var selectedListValueCategory=mutableStateOf("Alcoholic")
+
+    var loaded =  mutableStateOf(false)
+    //val localIsConnected = mutableStateOf(true)
     val drinks: MutableState<List<DrinkShort>> = mutableStateOf(listOf())
     var query = mutableStateOf("")
-    var categoryScrollPosition: Int = -1
     var loading = mutableStateOf(false)
-    val selectedCategory = mutableStateOf("")
+    var errorLoading = mutableStateOf("")
 
+    private var filterAlcoholic = mutableStateOf(false)
+    private var filterIngredients = mutableStateOf(false)
+    private var filterGlass = mutableStateOf(false)
+    private var filterCategory = mutableStateOf(false)
 
-    var filterAlcoholic = mutableStateOf(true)
-    var filterIngredients = mutableStateOf(false)
-    var filterGlass = mutableStateOf(false)
-    var filterCategory = mutableStateOf(false)
-
-    init {
-
-        query.value = drinkCategoryValues.currentCategory
-        selectedCategory.value = drinkCategoryValues.currentCategory
-        onTriggerEvent(DrinkListEvent.NewFilterAlcoholicEvent)
-    }
 
     fun filterAlcoholicDrinks(){
 
         resetSearchState()
         Log.d(TAG, "new filter query ${query.value}")
-        filterDrinks.execute(query = query.value).onEach {
+        println("localIsConnected.value = ${connectivityManager.isNetworkAvailable.value}")
+        filterDrinks.execute(query = query.value, isConnected = connectivityManager.isNetworkAvailable.value/*connectivityManager.isNetworkAvailable.value*/).onEach {
             dataState ->
             loading.value = dataState.loading
 
-            if(dataState.data == null){
-                println("new data set is null")
-            }
+            //loaded.value = false
+            println("localIsConnected.value = ${connectivityManager.isNetworkAvailable.value}")
+            //if(dataState.data == null){
+            //    println("new data set is null")
+            //}
             dataState.data?.let {
                     println("new data set! size list ${it.size}")
                     drinks.value = it
+                    loaded.value = true
             }
             dataState.error?.let {
                     error -> Log.d(TAG, "filter: $error")
+                errorLoading.value = error
+                loaded.value = true
             }
+
         }.launchIn(viewModelScope)
-
-                /*
-            .onEach{
-                    dataState ->
-                loading = dataState.loading
-
-
-                dataState.data?.let {
-                        list -> drinks.value = list
-                }
-                dataState.error?.let {
-                        error -> Log.d(TAG, "filter: $error")
-                }
-            }.launchIn(viewModelScope)
-
-                 */
     }
 
     fun onTriggerEvent(event: DrinkListEvent) {
@@ -92,97 +84,150 @@ class DrinkListViewModel
         }
     }
 
+
     fun onQueryChange(newer: String) {
+
+        Log.e(TAG, "onQueryChange: newer = $newer")
         query.value = newer
     }
 
-    fun onSelectedCategoryChanged(newCategory: String){
-        //val newCategory= getDrinkCategory(category)
-        selectedCategory.value =newCategory
-        onQueryChange(newCategory)
-    }
+    fun onSelectedValueCategoryChanged(newValueListCategory: String){
 
-    fun onChangeCategoryScrollPosition(position: Int) {
-        categoryScrollPosition  = position
+        println("  = onSelectedValueCategoryChanged= $newValueListCategory" )
+
+        categoryScrollPosition = -1
+        dataStore.valueCategory.value = newValueListCategory
+        onQueryChange(newValueListCategory)
     }
 
     /**
      * Called when a new search is executed.
      */
     private fun resetSearchState() {
+
+        println("resetSearchState------------")
         drinks.value = listOf()
+        errorLoading.value= ""
         //onChangeRecipeScrollPosition(0)
-        if (selectedCategory.value != query.value) clearSelectedCategory()
+        if (dataStore.valueCategory.value != query.value) clearSelectedCategory()
     }
 
     private fun clearSelectedCategory() {
-        selectedCategory.value = ""
+        dataStore.valueCategory.value = ""
     }
 
+    fun updateViewWithNewCategory(){
+        val oldCategory = dataStore.category.value
+        if(!filterAlcoholic.value && !filterIngredients.value && !filterGlass.value && !filterCategory.value) {
+            dataStore.category.value = ""
+        }
 
-    fun updateViewWithNewCategory(newCategory: String){
-        drinkCategoryValues.currentCategory = newCategory
-        selectedCategory.value = drinkCategoryValues.getValuesByCurrentCategory()[0]
-        query.value = selectedCategory.value
-        //onTriggerEvent(DrinkListEvent.NewFilterAlcoholicEvent)
+        if(filterAlcoholic.value)
+                dataStore.category.value = DrinkCategoryFilter.ALCOHOLIC.value
+        if(filterIngredients.value)
+            dataStore.category.value = DrinkCategoryFilter.INGREDIENTS.value
+        if(filterGlass.value)
+            dataStore.category.value = DrinkCategoryFilter.GLASS.value
+        if(filterCategory.value)
+            dataStore.category.value = DrinkCategoryFilter.CATEGORY.value
+
+        if(oldCategory == dataStore.category.value)
+                                return
+
+        val valuesCategory = getValuesByCurrentCategory(dataStore.category.value)
+
+
+        var newValue = ""
+        if(valuesCategory.isNotEmpty()) {
+            newValue = valuesCategory[0]
+            dataStore.valueCategory.value = newValue
+            query.value = newValue
+            categoryScrollPosition = 0
+
+            println("new! newValue $newValue")
+            println("new! dataStore.category.value ${dataStore.category.value}")
+            println("new! categoryScrollPosition $categoryScrollPosition")
+        }else {
+            dataStore.valueCategory.value = ""
+            //query.value = ""
+        }
     }
 
     fun onChangedCheckedFilter(newCategory: String) {
 
-        drinkCategoryValues.currentCategory = ""
+        //query.value = "Non alcoholic"
         when (newCategory) {
-            "a" -> {
+            DrinkCategoryFilter.ALCOHOLIC.value -> {
                 filterAlcoholic.value = !filterAlcoholic.value
                 filterIngredients.value = false
                 filterGlass.value = false
                 filterCategory.value = false
-                if(filterAlcoholic.value)
-                    updateViewWithNewCategory("Alcoholic")
             }
-            "i" -> {
+            DrinkCategoryFilter.INGREDIENTS.value -> {
                 filterAlcoholic.value = false
                 filterIngredients.value = !filterIngredients.value
                 filterGlass.value = false
                 filterCategory.value = false
-                if(filterIngredients.value)
-                    updateViewWithNewCategory("Ingredients")
-                    /*drinkCategoryValues.currentCategory = "Ingredients"
-                    selectedCategory.value = drinkCategoryValues.getValuesByCurrentCategory()[0]
-                    query.value = selectedCategory.value
-                    onTriggerEvent(DrinkListEvent.NewFilterAlcoholicEvent)*/
             }
-            "g" -> {
+            DrinkCategoryFilter.GLASS.value -> {
                 filterAlcoholic.value = false
                 filterIngredients.value = false
                 filterGlass.value = !filterGlass.value
                 filterCategory.value = false
-                if(filterGlass.value)
-                    updateViewWithNewCategory("Glass")
             }
-            "c" -> {
+            DrinkCategoryFilter.CATEGORY.value -> {
                 filterAlcoholic.value = false
                 filterIngredients.value = false
                 filterGlass.value = false
                 filterCategory.value = !filterCategory.value
-                if(filterCategory.value)
-                   updateViewWithNewCategory("Category")
             }
 
             else -> { // Note the block
                 print("$newCategory unknown !")
             }
+
         }
+
+        /*
+        dataStore.category.value = newCategory
+        if(!filterAlcoholic.value && !filterIngredients.value && !filterGlass.value && !filterCategory.value)
+           updateViewWithNewCategory(newCategory = "")
+        else
+           updateViewWithNewCategory(newCategory = newCategory)
+
+
+         */
+
+
+
     }
 
-        fun getCheckedStateByValue(category: String): Boolean {
 
-            if(category=="a") return  filterAlcoholic.value
-            if(category=="i") return  filterIngredients.value
-            if(category=="g") return  filterGlass.value
-            if(category=="c") return  filterCategory.value
-            return false
+
+
+        fun setCheckedStates(){
+           when(dataStore.category.value){
+                DrinkCategoryFilter.ALCOHOLIC.value     -> filterAlcoholic.value = true
+                DrinkCategoryFilter.INGREDIENTS.value   -> filterIngredients.value = true
+                DrinkCategoryFilter.CATEGORY.value      -> filterCategory.value = true
+                DrinkCategoryFilter.GLASS.value         -> filterGlass.value = true
+            }
         }
 
+        fun getCheckedStateByValue(category: String) =
+            when(category){
+                DrinkCategoryFilter.ALCOHOLIC.value     -> filterAlcoholic.value
+                DrinkCategoryFilter.INGREDIENTS.value   -> filterIngredients.value
+                DrinkCategoryFilter.CATEGORY.value      -> filterCategory.value
+                DrinkCategoryFilter.GLASS.value         -> filterGlass.value
+                else -> false
+            }
+
+
+    override fun onCleared() {
+        dataStore.saveQueryCommmaCategory("${query.value}, ${dataStore.category.value}")
+        super.onCleared()
+    }
 
 
 

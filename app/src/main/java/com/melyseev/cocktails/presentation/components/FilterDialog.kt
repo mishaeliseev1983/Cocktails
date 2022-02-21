@@ -50,7 +50,7 @@ fun FilterDialog(
 
                         list.forEach {
 
-                            val changeLetter = it.first().lowercase()
+                            category->
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -61,7 +61,7 @@ fun FilterDialog(
                                         enabled = true,
                                         onClick = {
                                             // filterOnHero()
-                                            onChecked(changeLetter)
+                                            onChecked(category)
                                         },
                                     ),
                             ) {
@@ -69,26 +69,21 @@ fun FilterDialog(
                                     modifier = Modifier
                                         .padding(end = 8.dp),
 
-                                    checked = getValueCheck(changeLetter),
+                                    checked = getValueCheck(category),
                                     onCheckedChange = {
-                                        onChecked(changeLetter)
+                                        onChecked(category)
                                     },
                                     colors = CheckboxDefaults.colors(MaterialTheme.colors.primary)
                                 )
                                 Text(
-                                    text = it,
+                                    text = category,
                                     style = MaterialTheme.typography.h6,
                                 )
 
                             }
                         }
                     }
-
-
-
                     }
-
-
 
 
             }

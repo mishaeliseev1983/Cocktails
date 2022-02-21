@@ -8,7 +8,6 @@ import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import com.melyseev.cocktails.presentation.components.ConnectivityMonitor
-import com.melyseev.cocktails.presentation.util.ConnectivityManagerNetworkAvailable
 
 @SuppressLint("ConflictingOnColor")
 private val LightThemeColors = lightColors(

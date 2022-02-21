@@ -1,8 +1,15 @@
 package com.melyseev.cocktails.di
 
+import com.melyseev.cocktails.cache.model.drinkFull.DrinkFullDao
+import com.melyseev.cocktails.cache.model.drinkFull.DrinkFullEntityMapper
+import com.melyseev.cocktails.cache.model.drinkQuery.DrinkQueryDao
+import com.melyseev.cocktails.cache.model.drinkQuery.DrinkQueryEntityMapper
+import com.melyseev.cocktails.cache.model.drinkShort.DrinkShortDao
+import com.melyseev.cocktails.cache.model.drinkShort.DrinkShortEntityMapper
 import com.melyseev.cocktails.interactors.drink.GetFullbyIdDrink
 import com.melyseev.cocktails.interactors.drink_list.FilterDrinks
 import com.melyseev.cocktails.network.RetrofitService
+import com.melyseev.cocktails.network.model.drink_full.DrinkFullDto
 import com.melyseev.cocktails.network.model.drink_full.DrinkFullDtoMapper
 import com.melyseev.cocktails.network.model.drink_short.DrinkShortDtoMapper
 import dagger.Module
@@ -22,12 +29,24 @@ object InteractorsModule {
         retrofitService: RetrofitService,
         //recipeEntityMapper: RecipeEntityMapper,
         drinkShortDtoMapper: DrinkShortDtoMapper,
+
+        shortDao: DrinkShortDao,
+        shortEntityMapper: DrinkShortEntityMapper,
+
+        queryDao: DrinkQueryDao,
+        queryEntityMapper: DrinkQueryEntityMapper
+
     ): FilterDrinks {
         return FilterDrinks(
             //recipeDao = recipeDao,
             retrofitService = retrofitService,
             //recipeEntityMapper = recipeEntityMapper,
-            drinkShortDtoMapper = drinkShortDtoMapper)
+            drinkShortDtoMapper = drinkShortDtoMapper,
+            shortDao = shortDao,
+            shortEntityMapper = shortEntityMapper,
+            queryDao = queryDao,
+            queryEntityMapper = queryEntityMapper
+            )
     }
 
 
@@ -38,11 +57,15 @@ object InteractorsModule {
         retrofitService: RetrofitService,
         //recipeEntityMapper: RecipeEntityMapper,
         drinkFullDtoMapper: DrinkFullDtoMapper,
+        fullDao: DrinkFullDao,
+        fullEntityMapper: DrinkFullEntityMapper,
     ):  GetFullbyIdDrink {
         return GetFullbyIdDrink(
             //recipeDao = recipeDao,
             retrofitService = retrofitService,
             //recipeEntityMapper = recipeEntityMapper,
-            drinkFullDtoMapper = drinkFullDtoMapper)
+            drinkFullDtoMapper = drinkFullDtoMapper,
+            fullDao = fullDao,
+            fullEntityMapper = fullEntityMapper)
     }
 }

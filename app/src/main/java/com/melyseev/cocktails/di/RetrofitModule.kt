@@ -18,19 +18,6 @@ object RetrofitModule {
 
     @Singleton
     @Provides
-    fun provideShortDtoMapper(): DrinkShortDtoMapper {
-        return DrinkShortDtoMapper()
-    }
-
-    @Singleton
-    @Provides
-    fun provideFullDtoMapper(): DrinkFullDtoMapper {
-        return DrinkFullDtoMapper()
-    }
-
-
-    @Singleton
-    @Provides
     fun provideRecipeService(): RetrofitService {
         return Retrofit
             .Builder()

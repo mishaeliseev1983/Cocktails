@@ -7,16 +7,21 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.melyseev.cocktails.BaseApplication
-import com.melyseev.cocktails.datastore.DataStoreDarkTheme
+
+
 import com.melyseev.cocktails.presentation.components.CircularIndeterminateProgressBar
 import com.melyseev.cocktails.presentation.components.DrinkFullView
+import com.melyseev.cocktails.presentation.components.NothingResult
 import com.melyseev.cocktails.presentation.theme.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 const val TAG = "DrinkFullFragment"
@@ -27,12 +32,6 @@ class DrinkFullFragment: Fragment() {
 
     private val viewModel: DrinkFullViewModel by viewModels()
 
-    @Inject
-    lateinit var application: BaseApplication
-
-    @Inject
-    lateinit var darkTheme: DataStoreDarkTheme
-
     var drinkId: String? = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,9 +41,11 @@ class DrinkFullFragment: Fragment() {
             drinkId = it
             viewModel.onTriggeredEvent(DrinkFullEvent.GetDrinkFilterById(drinkId ?: ""))
         }
-        super.onCreate(savedInstanceState)
 
+
+        super.onCreate(savedInstanceState)
     }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -54,21 +55,24 @@ class DrinkFullFragment: Fragment() {
 
         return ComposeView(requireContext()).apply {
 
-            println(" theme= ${darkTheme.isDark.value}")
+            println(" theme= ${viewModel.dataStore.isDark.value}")
             setContent {
 
-                AppTheme(
-                    darkTheme = darkTheme.isDark.value,
-                    isNetworkAvailable = viewModel.connectivityManager.isNetworkAvailable.value
-                ) {
 
+                AppTheme(
+                    darkTheme = viewModel.dataStore.isDark.value,
+                    isNetworkAvailable = true
+                ) {
                     val scaffoldState = rememberScaffoldState()
                     val loading = viewModel.loading.value
+                    val errorLoading = viewModel.errorLoading.value
                     Scaffold(
                         scaffoldState = scaffoldState,
                     ) {
+                        if(errorLoading.isNotEmpty()){
+                            NothingResult(message = errorLoading, hasButtonReload = false, onReload = {})
+                        }
                         viewModel.drinkFull?.let {
-
                             it.value?.let {
                                 DrinkFullView(drinkFull = it)
                             }
@@ -76,18 +80,6 @@ class DrinkFullFragment: Fragment() {
                         CircularIndeterminateProgressBar(isDisplayed = loading)
                     }
                 }
-                /*
-                viewModel.drinkFull?.let {
-
-                    it.value?.let {
-                        DrinkFullView(drinkFull = it)
-                    }
-                }
-
-                CircularIndeterminateProgressBar(isDisplayed = viewModel.loading.value)
-
-            }
-                 */
 
             }
         }

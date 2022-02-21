@@ -6,11 +6,23 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface RetrofitService {
+
+    //www.thecocktaildb.com/api/json/v1/1/search.php?f=a
+    @GET("search.php")
+    suspend fun searchByFirstLetter(
+        @Query("f") firstLetter: String
+    ): DrinkFilterResponse
+
+    //www.thecocktaildb.com/api/json/v1/1/search.php?s=margarita
+    @GET("search.php")
+    suspend fun searchByName(
+        @Query("s") name: String
+    ): DrinkFilterResponse
+
     @GET("filter.php")
     suspend fun filterByAlcoholic(
         @Query("a") alco: String
     ): DrinkFilterResponse
-
 
     @GET("filter.php")
     suspend fun filterByIngredient(

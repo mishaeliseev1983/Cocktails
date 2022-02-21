@@ -2,8 +2,11 @@ package com.melyseev.cocktails.network.model.drink_full
 
 import com.melyseev.cocktails.domain.model.DrinkFull
 import com.melyseev.cocktails.domain.util.DomainMapper
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class DrinkFullDtoMapper: DomainMapper<DrinkFullDto, DrinkFull> {
+@Singleton
+class DrinkFullDtoMapper @Inject constructor(): DomainMapper<DrinkFullDto, DrinkFull> {
     override fun mapToDomain(drinkFulltDto: DrinkFullDto): DrinkFull {
         return  DrinkFull(
             idDrink = drinkFulltDto.idDrink,

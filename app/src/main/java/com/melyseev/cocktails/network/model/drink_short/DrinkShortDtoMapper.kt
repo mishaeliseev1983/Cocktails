@@ -2,8 +2,9 @@ package com.melyseev.cocktails.network.model.drink_short
 
 import com.melyseev.cocktails.domain.model.DrinkShort
 import com.melyseev.cocktails.domain.util.DomainMapper
+import javax.inject.Inject
 
-class DrinkShortDtoMapper: DomainMapper<DrinkShortDto, DrinkShort> {
+class DrinkShortDtoMapper @Inject constructor(): DomainMapper<DrinkShortDto, DrinkShort> {
     override fun mapToDomain(drinkShortDto: DrinkShortDto): DrinkShort {
         return  DrinkShort(
                 idDrink = drinkShortDto.idDrink,
@@ -20,11 +21,11 @@ class DrinkShortDtoMapper: DomainMapper<DrinkShortDto, DrinkShort> {
         )
     }
 
-    fun fromDomainList(initial: List<DrinkShortDto>): List<DrinkShort>{
+    fun fromDomainList(initial: List<DrinkShortDto>): List<DrinkShort> {
         return initial.map { mapToDomain(it) }
     }
 
-    fun toDomainList(initial: List<DrinkShort>): List<DrinkShortDto>{
+    fun toDomainList(initial: List<DrinkShort>): List<DrinkShortDto> {
         return initial.map { mapFromDomain(it) }
     }
 }
